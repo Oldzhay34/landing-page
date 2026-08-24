@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Odyssey · Aksa</title>
+<meta name="description" content="Aksa kurum içi uygulamalarına tek noktadan erişim." />
+<link rel="icon" href="/assets/aksa-blok.svg" />
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/shell.css" />
+</head>
+<body>
+
+<!-- ══ Arka plan ══ -->
+<div class="bg" aria-hidden="true">
+  <canvas id="mesh"></canvas>
+  <div class="aurora aurora--1"></div>
+  <div class="aurora aurora--2"></div>
+  <div class="spotlight" id="spotlight"></div>
+  <div class="grid-lines"></div>
+  <div class="vignette"></div>
+</div>
+
+<!-- ══ Açılış perdesi: oturum kontrol edilirken (bkz. auth.js) ══ -->
+<div class="splash" id="splash">
+  <img class="splash__logo" src="/assets/aksa-blok.svg" alt="Aksa" />
+  <span class="splash__bar"><i></i></span>
+</div>
+
+<!-- ══ Giriş ekranı ══ -->
+<!-- Eskiden Capacity Planner frontend'inin içindeydi (LoginPage.jsx); artık
+     kimlik doğrulama dış katmanda, yani burada. Alt uygulamalar oturumu
+     kendileri açmaz - Odyssey'in yazdığı çerezi (aynı origin, bkz.
+     nginx.conf /api proxy'si) devralırlar. -->
+<div class="login" id="loginView" hidden>
+  <div class="login__orb login__orb--a" aria-hidden="true"></div>
+  <div class="login__orb login__orb--b" aria-hidden="true"></div>
+  <div class="login__orb login__orb--c" aria-hidden="true"></div>
+  <div class="login__orb login__orb--d" aria-hidden="true"></div>
+
+  <form class="login__card" id="loginForm" autocomplete="on">
+    <span class="login__logo"><img src="/assets/aksa-blok.svg" alt="Aksa" /></span>
+    <h1 class="login__title">Odyssey</h1>
+    <p class="login__sub">Aksa kurum içi uygulama merkezi</p>
+
+    <label class="field">
+      <span class="field__label">Sicil No</span>
+      <input class="field__input" id="loginSicil" name="username" placeholder="örn: 40539"
+             autocomplete="username" inputmode="numeric" autofocus />
+    </label>
+
+    <label class="field">
+      <span class="field__label">Şifre</span>
+      <input class="field__input" id="loginPassword" name="password" type="password"
+             placeholder="••••••••" autocomplete="current-password" />
+    </label>
+
+    <p class="login__error" id="loginError" hidden role="alert"></p>
+
+    <button class="login__submit" type="submit" id="loginSubmit">Giriş Yap</button>
+  </form>
+</div>
+
+<!-- ══ Uygulama merkezi (hub) ══ -->
+<div class="app" id="hubView" hidden>
+
+  <!-- ══ Üst çubuk ══ -->
+  <header class="bar">
+    <a class="brand" href="/" data-home aria-label="Odyssey">
+      <img class="brand__logo" src="/assets/aksa-blok.svg" alt="Aksa" />
+      <span class="brand__divider" aria-hidden="true"></span>
+      <span class="brand__title">Odyssey</span>
+    </a>
+
+    <div class="bar__right">
+      <span class="live-dot" title="Yayındaki uygulama sayısı">
+        <i></i><b id="liveCount">0</b> uygulama yayında
+      </span>
+      <span class="clock" id="clock"></span>
+      <span class="user" id="userBadge" hidden>
+        <span class="user__name" id="userName"></span>
+        <button class="user__out" id="logoutBtn" type="button" title="Çıkış yap" aria-label="Çıkış yap">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 17l5-5-5-5M20 12H9M12 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </span>
+    </div>
+  </header>
+
+  <!-- ══ Sahne: kayar pencere ══ -->
+  <main class="stage">
+
+    <div class="stage__head">
+      <h1>Kurum içi uygulamalar</h1>
+      <p>Tüm departmanların erişimine açık araçlar</p>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <button class="arrow arrow--prev" id="prev" aria-label="Önceki uygulama">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="track" id="track"><!-- JS ile doldurulur --></div>
+
+      <button class="arrow arrow--next" id="next" aria-label="Sonraki uygulama">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="pager">
+      <span class="pager__num"><b id="curNum">01</b><i>/</i><span id="totalNum">04</span></span>
+      <div class="dots" id="dots" role="tablist" aria-label="Uygulama seçimi"></div>
+      <span class="pager__hint">
+        <kbd>←</kbd><kbd>→</kbd> gezin · <kbd>Enter</kbd> aç
+      </span>
+    </div>
+
+  </main>
+
+  <!-- ══ Alt çubuk ══ -->
+  <footer class="bar bar--foot">
+    <span class="foot__left">
+      <img class="foot__logo" src="/assets/kazanci-holding.svg" alt="Kazancı Holding" />
+    </span>
+    <span class="foot__right">© <span id="year">2026</span> Aksa · kurum içi kullanım</span>
+  </footer>
+
+</div>
+
+<!-- ══ Uygulama görünümü: seçilen uygulama AYNI sekmede iframe içinde ══ -->
+<div class="appview" id="appView" hidden>
+  <header class="appbar">
+    <button class="appbar__back" id="appBack" type="button">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Odyssey
+    </button>
+    <span class="appbar__title" id="appTitle"></span>
+    <a class="appbar__ext" id="appExternal" target="_blank" rel="noopener">
+      Yeni sekmede aç
+      <svg viewBox="0 0 16 16" fill="none"><path d="M6 3h7v7M13 3 4 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </header>
+
+  <div class="appframe" id="appFrame"><!-- iframe her açılışta yeniden kurulur --></div>
+
+  <div class="appstate" id="appLoading" hidden>
+    <span class="appstate__spin"></span>
+    <p id="appLoadingText">Uygulama açılıyor…</p>
+  </div>
+
+  <div class="appstate appstate--error" id="appError" hidden>
+    <h2 id="appErrorTitle">Uygulama görüntülenemedi</h2>
+    <p id="appErrorText"></p>
+    <span class="appstate__actions">
+      <a class="appstate__btn appstate__btn--primary" id="appErrorOpen" target="_blank" rel="noopener">Yeni sekmede aç</a>
+      <button class="appstate__btn" id="appErrorBack" type="button">Odyssey'e dön</button>
+    </span>
+  </div>
+</div>
+
+<script src="/projects.js"></script>
+<script src="/main.js"></script>
+<script src="/auth.js"></script>
+<script src="/float-icons.js"></script>
+<script src="/shell.js"></script>
+</body>
+</html>

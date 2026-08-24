@@ -1,0 +1,391 @@
+/* ══════════════════════════════════════════════════
+   Odyssey — kabuk görünümleri: açılış perdesi, giriş ekranı,
+   uygulama çerçevesi ve kullanıcı rozeti.
+   Renkler styles.css'teki değişkenlerden gelir; ayrı dosya olmasının tek
+   sebebi karusel tasarımıyla karışmaması.
+   ══════════════════════════════════════════════════ */
+
+/* ══════════ Açılış perdesi (oturum sorgulanırken) ══════════ */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: var(--bg);
+}
+.splash[hidden] { display: none; }
+.splash__logo { width: 116px; opacity: .9; }
+.splash__bar {
+  display: block;
+  width: 180px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .08);
+  overflow: hidden;
+}
+.splash__bar i {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--aksa-blue), var(--aksa-green));
+  animation: splash-slide 1.1s var(--ease) infinite;
+}
+@keyframes splash-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* ══════════ Giriş ekranı ══════════ */
+
+.login {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login[hidden] { display: none; }
+
+/* Capacity Planner'ın eski giriş ekranındaki renkli parlama toplarının
+   Odyssey karşılığı (bkz. LoginPage.jsx / theme.css .login-glow-orb). */
+.login__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  opacity: .5;
+  animation: login-orb ease-in-out infinite;
+}
+.login__orb--a {
+  top: -12%; left: -10%; width: 380px; height: 380px;
+  background: radial-gradient(circle, #16a34a, transparent 70%);
+  animation-duration: 11s;
+}
+.login__orb--b {
+  top: 52%; left: -14%; width: 320px; height: 320px;
+  background: radial-gradient(circle, #2563eb, transparent 70%);
+  animation-duration: 13s; animation-delay: 1s;
+}
+.login__orb--c {
+  top: -16%; right: -10%; width: 340px; height: 340px;
+  background: radial-gradient(circle, #e0761f, transparent 70%);
+  animation-duration: 12s; animation-delay: .5s;
+}
+.login__orb--d {
+  bottom: -16%; right: -8%; width: 300px; height: 300px;
+  background: radial-gradient(circle, #7c3aed, transparent 70%);
+  animation-duration: 14s; animation-delay: 1.5s;
+}
+@keyframes login-orb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(22px, -18px) scale(1.08); }
+}
+
+/* Ekranda gerçek fizikle (konum + hız) dolaşıp kenarlara çarpan renkli
+   rozetler - eski giriş ekranındaki "toplar" (bkz. LoginPage.jsx
+   useBouncingIcons). Konumu her karede JS transform ile yazar; buradaki
+   tanım yalnızca görünüm. */
+.login__float {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.login__float-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .55);
+  animation: login-badge-spin 3.2s linear infinite;
+}
+.login__float-badge svg {
+  width: 42%;
+  height: 42%;
+  color: #fff;
+}
+@keyframes login-badge-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.login__card {
+  position: relative;
+  z-index: 1;
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 34px 30px 30px;
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  background: rgba(10, 18, 32, .62);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+  animation: login-pop .3s cubic-bezier(.2, .9, .3, 1.3);
+}
+@keyframes login-pop {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.login__logo {
+  align-self: center;
+  width: 136px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 0 20px rgba(74, 159, 224, .5);
+  margin-bottom: 4px;
+}
+.login__logo img { width: 100%; height: 100%; object-fit: contain; }
+
+.login__title {
+  margin: 0;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  background: linear-gradient(90deg, var(--aksa-blue-300), #eaf6ff 45%, var(--aksa-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.login__sub {
+  margin: -8px 0 6px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.field__input {
+  font: inherit;
+  color: var(--text);
+  padding: 11px 13px;
+  border-radius: 11px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, .05);
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease);
+}
+.field__input::placeholder { color: var(--text-3); }
+.field__input:focus {
+  outline: none;
+  border-color: var(--aksa-blue-400);
+  box-shadow: 0 0 0 3px rgba(47, 156, 224, .22);
+}
+
+.login__error {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  color: #fca5a5;
+  background: rgba(239, 68, 68, .16);
+  border: 1px solid rgba(239, 68, 68, .3);
+}
+.login__error[hidden] { display: none; }
+
+.login__submit {
+  margin-top: 6px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #04121e;
+  background: linear-gradient(90deg, var(--aksa-green), var(--aksa-green-300));
+  box-shadow: 0 10px 26px rgba(155, 205, 101, .25);
+  transition: transform .16s var(--spring), filter .16s var(--ease);
+}
+.login__submit:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
+.login__submit:disabled { opacity: .65; cursor: default; }
+
+/* ══════════ Üst çubuktaki kullanıcı rozeti ══════════ */
+
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.user[hidden] { display: none; }
+.user__name { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+.user__out {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--text-3);
+  transition: color .16s var(--ease), background .16s var(--ease);
+}
+.user__out svg { width: 15px; height: 15px; }
+.user__out:hover { color: #fca5a5; background: rgba(239, 68, 68, .14); }
+
+/* ══════════ Uygulama görünümü (iframe) ══════════ */
+
+body.is-app { overflow: hidden; }
+
+.appview {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.appview[hidden] { display: none; }
+
+.appbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 46px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(4, 6, 13, .92);
+  backdrop-filter: blur(10px);
+}
+.appbar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: color .16s var(--ease), border-color .16s var(--ease);
+}
+.appbar__back svg { width: 15px; height: 15px; }
+.appbar__back:hover { color: var(--text); border-color: var(--line-strong); }
+
+.appbar__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.appbar__title::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--active);
+  box-shadow: 0 0 10px var(--active);
+  vertical-align: middle;
+}
+
+.appbar__ext {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  transition: color .16s var(--ease);
+}
+.appbar__ext svg { width: 12px; height: 12px; }
+.appbar__ext:hover { color: var(--aksa-blue-300); }
+
+.appframe { position: relative; flex: 1 1 auto; min-height: 0; }
+.appframe__el {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+/* Yükleniyor / hata katmanları - iframe'in üstünü kaplar. */
+.appstate {
+  position: absolute;
+  inset: 46px 0 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px;
+  text-align: center;
+  background: var(--bg);
+  color: var(--text-2);
+}
+.appstate[hidden] { display: none; }
+.appstate h2 { font-size: 18px; color: var(--text); }
+.appstate p { max-width: 480px; font-size: 13.5px; line-height: 1.65; }
+.appstate__spin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, .12);
+  border-top-color: var(--aksa-blue-400);
+  animation: appstate-spin .8s linear infinite;
+}
+@keyframes appstate-spin { to { transform: rotate(360deg); } }
+
+.appstate--error h2 { color: #f8d38a; }
+.appstate__actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.appstate__btn {
+  padding: 9px 16px;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  transition: color .16s var(--ease), border-color .16s var(--ease);
+}
+.appstate__btn:hover { color: var(--text); border-color: var(--aksa-blue-400); }
+.appstate__btn--primary {
+  color: #04121e;
+  border-color: transparent;
+  background: linear-gradient(90deg, var(--aksa-green), var(--aksa-green-300));
+}
+.appstate__btn--primary:hover { color: #04121e; filter: brightness(1.05); }
+
+@media (prefers-reduced-motion: reduce) {
+  .login__orb,
+  .login__float-badge,
+  .splash__bar i,
+  .appstate__spin { animation: none; }
+}

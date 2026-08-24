@@ -1,0 +1,9 @@
+﻿.claude/
+.idea/
+.vs/
+node_modules/
+*.zip
+.DS_Store
+odyssey-auth/target/
+odyssey-auth/.claude/
+odyssey-auth/.idea/

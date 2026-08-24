@@ -1,0 +1,460 @@
+/* ══════════════════════════════════════════════════
+   Aksa · Proje Merkezi
+   Kurumsal renkler aksa-blok.svg'den: #0075bf · #9bcd65
+   Kayar pencere (coverflow) düzeni — tek ekran, kaydırma yok
+   ══════════════════════════════════════════════════ */
+
+:root {
+  --aksa-blue: #0075bf;
+  --aksa-blue-400: #2f9ce0;
+  --aksa-blue-300: #74c4f4;
+  --aksa-green: #9bcd65;
+  --aksa-green-300: #bde092;
+
+  --bg: #04060d;
+  --surface: rgba(255, 255, 255, .04);
+  --line: rgba(255, 255, 255, .09);
+  --line-strong: rgba(255, 255, 255, .17);
+
+  --text: #eaf1fb;
+  --text-2: #a7b6cd;
+  --text-3: #6b7c95;
+
+  --acc-blue: #2f9ce0;
+  --acc-green: #9bcd65;
+  --acc-violet: #9b7cf6;
+  --acc-amber: #f2b544;
+  /* Aksa Board karti icin besinci ton - dort kart varken dort renk yetiyordu. */
+  --acc-teal: #2fd3c4;
+
+  /* etkin projenin rengi — JS günceller */
+  --active: #2f9ce0;
+
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --spring: cubic-bezier(.34, 1.4, .5, 1);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+    Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(47, 156, 224, .35); color: #fff; }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* ══════════ Arka plan ══════════ */
+
+.bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+#mesh { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .45; }
+
+.aurora { position: absolute; border-radius: 50%; filter: blur(120px); }
+.aurora--1 {
+  width: 700px; height: 700px; top: -300px; left: -180px; opacity: .45;
+  background: radial-gradient(circle, rgba(0, 117, 191, .8), transparent 68%);
+  animation: drift1 28s var(--ease) infinite alternate;
+}
+.aurora--2 {
+  width: 620px; height: 620px; bottom: -320px; right: -160px; opacity: .34;
+  background: radial-gradient(circle, rgba(155, 205, 101, .55), transparent 68%);
+  animation: drift2 34s var(--ease) infinite alternate;
+}
+@keyframes drift1 { to { transform: translate3d(190px, 150px, 0) scale(1.15); } }
+@keyframes drift2 { to { transform: translate3d(-170px, -130px, 0) scale(.88); } }
+
+/* etkin kartın arkasındaki renkli ışık — rengi JS'ten gelir */
+.spotlight {
+  position: absolute; top: 50%; left: 50%;
+  width: 760px; height: 540px; margin: -270px 0 0 -380px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--active) 42%, transparent), transparent 68%);
+  filter: blur(90px);
+  opacity: .55;
+  transition: background 1s var(--ease);
+  animation: pulseGlow 7s var(--ease) infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: .5; }
+  50% { transform: scale(1.14); opacity: .68; }
+}
+
+.grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 45%, #000 8%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 45%, #000 8%, transparent 72%);
+}
+
+.vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 120% 90% at 50% 50%, transparent 38%, rgba(0, 0, 0, .7) 100%);
+}
+
+/* ══════════ Kabuk ══════════ */
+
+.app {
+  position: relative; z-index: 1;
+  height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.bar {
+  display: flex; align-items: center; gap: 18px;
+  width: min(100% - 56px, 1400px);
+  margin-inline: auto;
+  height: 74px;
+  animation: fadeDown .8s var(--ease) both;
+}
+.bar--foot {
+  height: 58px; justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px; color: var(--text-3);
+  animation: fadeUp .8s var(--ease) .6s both;
+}
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } }
+
+.brand { display: flex; align-items: center; gap: 16px; margin-right: auto; }
+.brand__logo { height: 34px; width: auto; border-radius: 4px; transition: transform .4s var(--ease), filter .4s var(--ease); }
+.brand:hover .brand__logo { transform: translateY(-1px); filter: brightness(1.12); }
+.brand__divider { width: 1px; height: 26px; background: var(--line-strong); }
+.brand__title { font-size: 16px; font-weight: 600; letter-spacing: -.015em; color: var(--text-2); }
+
+.bar__right { display: flex; align-items: center; gap: 18px; }
+
+.live-dot {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 100px;
+  border: 1px solid var(--line); background: var(--surface);
+  font-size: 12.5px; color: var(--text-2);
+  backdrop-filter: blur(10px);
+}
+.live-dot i {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--aksa-green);
+  box-shadow: 0 0 10px var(--aksa-green);
+  animation: blink 2.4s var(--ease) infinite;
+}
+.live-dot b { color: var(--text); font-weight: 700; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+.clock { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--text-3); }
+
+/* ══════════ Sahne ══════════ */
+
+.stage {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: 4px 0 10px;
+}
+
+.stage__head { text-align: center; margin-bottom: 6px; animation: fadeUp .9s var(--ease) .15s both; }
+.stage__head h1 {
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.15; letter-spacing: -.035em; font-weight: 700;
+  background: linear-gradient(100deg, #fff 12%, var(--aksa-blue-300) 55%, var(--aksa-green-300) 95%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 9s linear infinite;
+}
+@keyframes shimmer { to { background-position: 220% 0; } }
+.stage__head p { font-size: 13.5px; color: var(--text-3); margin-top: 4px; }
+
+/* ══════════ Kayar pencere ══════════ */
+
+.carousel {
+  position: relative;
+  display: grid; place-items: center;
+  min-height: 0;
+  perspective: 1600px;
+  touch-action: pan-y;
+  cursor: grab;
+}
+.carousel.is-dragging { cursor: grabbing; }
+
+.track {
+  position: relative;
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  transform-style: preserve-3d;
+}
+
+/* ── Kart ── */
+
+.slide {
+  --acc: var(--acc-blue);
+  position: absolute;
+  width: clamp(280px, 27vw, 380px);
+  height: clamp(320px, 46vh, 430px);
+  display: flex; flex-direction: column;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .02));
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, filter, opacity;
+  transition:
+    transform .75s var(--spring),
+    filter .6s var(--ease),
+    opacity .6s var(--ease),
+    border-color .5s var(--ease),
+    box-shadow .6s var(--ease);
+}
+.slide[data-accent="green"]  { --acc: var(--acc-green); }
+.slide[data-accent="violet"] { --acc: var(--acc-violet); }
+.slide[data-accent="amber"]  { --acc: var(--acc-amber); }
+.slide[data-accent="teal"]   { --acc: var(--acc-teal); }
+
+/* yan kartlar: küçük, blurlu, soluk */
+.slide--side {
+  cursor: pointer;
+  filter: blur(5px) saturate(.7) brightness(.72);
+  opacity: .5;
+}
+.slide--far {
+  filter: blur(9px) saturate(.55) brightness(.55);
+  opacity: .22;
+}
+.slide--hidden { opacity: 0; pointer-events: none; }
+.slide--side:hover { filter: blur(1.5px) saturate(.95) brightness(.98) !important; opacity: .92 !important; }
+
+/* etkin kart */
+.slide--active {
+  filter: none;
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--acc) 42%, transparent);
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, 1),
+    0 0 0 1px color-mix(in srgb, var(--acc) 18%, transparent),
+    0 0 70px -30px color-mix(in srgb, var(--acc) 70%, transparent);
+}
+/* etkin kartta üst aksan çizgisi ve iç parıltı */
+.slide--active::before {
+  content: ""; position: absolute; top: 0; left: 24px; right: 24px; height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--acc), transparent);
+}
+.slide--active::after {
+  content: ""; position: absolute; inset: -40% -10% auto; height: 80%;
+  background: radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+/* ── Kart içeriği ── */
+
+.slide__top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; position: relative; z-index: 1; }
+
+.slide__icon {
+  width: 50px; height: 50px; flex: none;
+  display: grid; place-items: center; border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--acc) 36%, transparent);
+  background: color-mix(in srgb, var(--acc) 15%, transparent);
+  color: var(--acc);
+  transition: transform .6s var(--spring), box-shadow .6s var(--ease);
+}
+.slide__icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.slide--active .slide__icon {
+  box-shadow: 0 12px 28px -12px var(--acc);
+  animation: iconPop .8s var(--spring) both;
+}
+@keyframes iconPop { from { transform: scale(.8) rotate(-12deg); } to { transform: none; } }
+
+.badge {
+  margin-left: auto; flex: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 100px;
+  font-size: 11.5px; font-weight: 600;
+  border: 1px solid transparent;
+}
+.badge i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge--live { color: var(--aksa-green); background: rgba(155, 205, 101, .12); border-color: rgba(155, 205, 101, .3); }
+.badge--live i { animation: blink 2.2s var(--ease) infinite; }
+.badge--dev  { color: var(--acc-amber); background: rgba(242, 181, 68, .12); border-color: rgba(242, 181, 68, .3); }
+.badge--soon { color: var(--text-3); background: rgba(255, 255, 255, .05); border-color: var(--line); }
+
+.slide__body { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+.slide__name { font-size: clamp(19px, 1.7vw, 23px); font-weight: 700; letter-spacing: -.03em; line-height: 1.2; margin-bottom: 5px; }
+.slide__tagline { font-size: 13px; color: var(--text-3); margin-bottom: 14px; }
+.slide__desc { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+
+/* Kartın içindeki küçük, temsili arayüz önizlemesi (inline SVG) - kendi
+   çerçeveli panelinde durur (buton ile görsel olarak birbirine karışmasın
+   diye, bkz. kullanıcı bildirimi 2026-08-18: "çok iç içe geçmiş"), kartın
+   accent rengini (--acc) currentColor üzerinden otomatik alır. */
+.slide__preview {
+  margin: 18px 0 24px;
+  padding: 12px 12px 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+  color: var(--acc);
+  overflow: hidden;
+  line-height: 0;
+  transition: border-color .5s var(--ease);
+}
+.slide--active .slide__preview { border-color: color-mix(in srgb, var(--acc) 24%, var(--line)); }
+.slide__preview svg { width: 100%; height: auto; display: block; }
+
+/* Buton önizleme panelinden net ayrık, kendi çerçevesi ve cam parıltısı olan
+   "premium" bir CTA - önceki duz gradyan çok sade/ucuz duruyordu. */
+.slide__cta {
+  margin-top: auto;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  height: 48px; border-radius: 12px;
+  font-size: 14.5px; font-weight: 600; letter-spacing: .015em; color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--acc) 96%, #fff 10%), color-mix(in srgb, var(--acc) 76%, #000 30%));
+  border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+    0 10px 26px -14px color-mix(in srgb, var(--acc) 85%, transparent);
+  padding: 0 20px;
+  transition: transform .3s var(--spring), box-shadow .3s var(--ease), filter .3s, border-color .3s;
+}
+.slide__cta svg { width: 15px; height: 15px; transition: transform .35s var(--ease); }
+.slide__cta:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+  border-color: color-mix(in srgb, var(--acc) 80%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 65%, transparent),
+    0 20px 40px -16px var(--acc);
+}
+.slide__cta:hover svg { transform: translate(2px, -2px); }
+.slide__cta--off {
+  background: rgba(255, 255, 255, .04); color: var(--text-3);
+  border: 1px dashed var(--line);
+  box-shadow: none; pointer-events: none;
+}
+
+/* etkin kart içeriğinin sıralı girişi */
+.slide--active .slide__name,
+.slide--active .slide__tagline,
+.slide--active .slide__desc,
+.slide--active .slide__preview,
+.slide--active .slide__cta { animation: riseIn .6s var(--ease) both; }
+.slide--active .slide__name    { animation-delay: .06s; }
+.slide--active .slide__tagline { animation-delay: .11s; }
+.slide--active .slide__desc    { animation-delay: .16s; }
+.slide--active .slide__preview { animation-delay: .21s; }
+.slide--active .slide__cta     { animation-delay: .26s; }
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } }
+
+/* ── Oklar ── */
+
+.arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 20;
+  width: 52px; height: 52px; display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: rgba(10, 16, 30, .5);
+  backdrop-filter: blur(14px);
+  color: var(--text-2);
+  transition: .4s var(--ease);
+}
+.arrow svg { width: 22px; height: 22px; }
+.arrow--prev { left: max(20px, 3vw); }
+.arrow--next { right: max(20px, 3vw); }
+.arrow:hover {
+  color: #fff; transform: translateY(-50%) scale(1.1);
+  border-color: color-mix(in srgb, var(--active) 55%, transparent);
+  background: color-mix(in srgb, var(--active) 18%, rgba(10, 16, 30, .6));
+  box-shadow: 0 0 30px -8px var(--active);
+}
+.arrow:active { transform: translateY(-50%) scale(.94); }
+
+/* ── Sayfalayıcı ── */
+
+.pager {
+  display: flex; align-items: center; justify-content: center; gap: 26px;
+  padding-top: 14px;
+  animation: fadeUp .9s var(--ease) .45s both;
+}
+
+.pager__num { font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.pager__num b { color: var(--text); font-size: 15px; font-weight: 700; }
+.pager__num i { margin: 0 4px; font-style: normal; opacity: .5; }
+
+.dots { display: flex; align-items: center; gap: 9px; }
+.dot {
+  width: 8px; height: 8px; border-radius: 100px;
+  background: rgba(255, 255, 255, .18);
+  transition: .5s var(--spring);
+}
+.dot:hover { background: rgba(255, 255, 255, .4); transform: scale(1.25); }
+.dot.is-on {
+  width: 30px;
+  background: linear-gradient(90deg, var(--aksa-blue-400), var(--aksa-green));
+  box-shadow: 0 0 14px -2px var(--active);
+}
+
+.pager__hint { font-size: 11.5px; color: var(--text-3); }
+.pager__hint kbd {
+  display: inline-block; min-width: 20px; padding: 1px 5px; margin-right: 3px;
+  border: 1px solid var(--line-strong); border-radius: 5px;
+  background: rgba(255, 255, 255, .05);
+  font-family: inherit; font-size: 11px; color: var(--text-2); text-align: center;
+}
+
+/* ══════════ Alt çubuk ══════════ */
+
+.foot__left {
+  display: inline-flex; padding: 7px 12px; border-radius: 9px;
+  background: rgba(255, 255, 255, .82);
+  transition: background .3s var(--ease);
+}
+.foot__left:hover { background: #fff; }
+.foot__logo { height: 17px; width: auto; color: #14181f; }
+
+/* ══════════ Duyarlı ══════════ */
+
+@media (max-height: 720px) {
+  .bar { height: 62px; }
+  .bar--foot { height: 52px; }
+  .stage__head p { display: none; }
+  .slide { padding: 20px; }
+  .slide__desc { display: none; }
+  .slide__preview { display: none; }
+  .pager__hint { display: none; }
+}
+
+@media (max-width: 900px) {
+  .bar, .stage { width: calc(100% - 28px); }
+  .bar { height: auto; padding: 14px 0; flex-wrap: wrap; gap: 12px; }
+  .clock { display: none; }
+  .arrow { width: 42px; height: 42px; }
+  .arrow--prev { left: 4px; }
+  .arrow--next { right: 4px; }
+  .slide { width: min(78vw, 320px); }
+  .pager__hint { display: none; }
+  .bar--foot { height: auto; padding: 14px 0; }
+}
+
+/* ══════════ Hareket azaltma ══════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  #mesh { display: none; }
+}

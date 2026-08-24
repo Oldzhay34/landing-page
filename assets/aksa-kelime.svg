@@ -1,0 +1,20 @@
+<!--
+  AKSA kelime markası — kurumsal kilit logonun (aksa-dogalgaz.svg) YALNIZ
+  "aksa" harfleri. Kilidin mavi/yeşil zemini, siyah kutusu ve "DOĞALGAZ"
+  satırı bilerek dışarıda.
+
+  Neden ayrı bir dosya: kilit logo OPAK zeminli. Posterin filigranı olarak
+  basılırsa arkasındaki içeriği kapatır, küçük imza boyutunda ise renk
+  blokları okunmaz hâle gelir. Bu iki yerde markanın tanınırlığını taşıyan
+  şey harflerin kendisi, o yüzden yalnız onlar alındı.
+
+  Dolgu currentColor: filigran posterin mürekkebini (var(--ink)), imza da
+  var(--muted)'i alsın diye — böylece altı palet ve açık/koyu modun hepsiyle
+  uyumlu kalıyor, kilit logonun sabit mavisi paletle çakışmıyor.
+
+  viewBox, harflerin gerçek sınırlarına oturtuldu (kilitteki 0 0 595.27
+  180.21 kutusunun x 148.85..446.42 / y 59.9..120.3 bölgesi). Orijinaldeki
+  clipPath alınmadı: harfler zaten kutunun içinde kalıyor ve id çakışması
+  (aynı sayfaya iki kez gömülüyor) böylece hiç doğmuyor.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="148.85 59.9 297.57 60.4" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M177.35,101.54c0-5.68,5.44-7.85,12.35-7.85,3.06,0,6,.23,8.61.35,0,6.93-4.87,14-12.57,14-4.76,0-8.39-2.39-8.39-6.47m41.12,18.74a72.37,72.37,0,0,1-1.14-14v-22c0-18.06-13-24.54-28.08-24.54a60.91,60.91,0,0,0-23.56,4.2L166,77.79a38.26,38.26,0,0,1,18.8-4.43c7.36,0,13.37,2.16,13.48,10.23a59,59,0,0,0-9.52-.8c-10.87,0-30.46,2.16-30.46,20.23,0,12.84,10.42,18.63,22.08,18.63,8.38,0,14.05-3.3,18.69-10.68h.23c0,3.07.34,6.13.45,9.31Z"/><path fill-rule="evenodd" d="M395.83,101.54c0-5.68,5.43-7.85,12.34-7.85,3.06,0,6,.23,8.61.35,0,6.93-4.87,14-12.57,14-4.76,0-8.38-2.39-8.38-6.47m41.11,18.74a72.36,72.36,0,0,1-1.13-14v-22c0-18.06-13-24.54-28.09-24.54a60.83,60.83,0,0,0-23.55,4.2l.33,13.86a38.32,38.32,0,0,1,18.81-4.43c7.35,0,13.36,2.16,13.47,10.23a58.86,58.86,0,0,0-9.51-.8c-10.88,0-30.46,2.16-30.46,20.23,0,12.84,10.41,18.63,22.08,18.63,8.38,0,14-3.3,18.68-10.68h.22c0,3.07.35,6.13.46,9.31Z"/><path d="M309.22,118.81c6,1.94,12.23,2.84,21.4,2.84,13.37,0,27.52-4,27.52-19.76,0-22.5-30.35-15.23-30.35-24.43,0-3.3,5-4.09,9.4-4.09,5.1,0,11.56,1.36,15.86,4l1.58-14.21c-6.56-2.61-13.7-3.41-20.72-3.41-11.78,0-25.15,5.57-25.15,19.2,0,21.36,29,14.32,29,24.32,0,4.1-4.08,4.77-8.27,4.77a50.46,50.46,0,0,1-19.14-4.09l-1.13,14.88"/><polyline points="239.96 120.3 255.76 120.3 255.76 93.28 255.93 93.28 274.36 120.3 294.08 120.3 270.44 88.5 291.93 59.91 273.77 59.91 255.76 85.1 255.76 59.91 239.96 59.91 239.96 120.3"/></svg>
